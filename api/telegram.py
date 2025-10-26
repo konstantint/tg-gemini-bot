@@ -61,7 +61,7 @@ class Update:
     def _type(self):
         if "text" in self.update["message"]:
             text = self.update["message"]["text"]
-            if text.startswith("/") and not text.startswith("/new"):
+            if text.startswith("/") and not text.startswith("/new") and not text.startswith("/gemini") and not text.startswith("/Gemini") and not text.startswith("/ai") and not text.startswith("/AI"):
                 return "command"
             return "text"
         elif "photo" in self.update["message"]:

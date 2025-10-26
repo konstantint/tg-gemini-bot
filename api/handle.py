@@ -12,7 +12,7 @@ them pretty straight-up without much fuss.
 """
 
 from .auth import is_authorized
-from .command import excute_command
+from .command import execute_command
 from .context import ChatManager, ImageChatManger
 from .telegram import Update, send_message
 from .printLog import send_log,send_image_log
@@ -23,15 +23,6 @@ chat_manager = ChatManager()
 
 def handle_message(update_data):
 
-    #try:
-    #    update = update_data["message"]["from"]["id"]
-    #except  Exception as e:
-    #    strupdate_data = str(update_data)
-    #    start = strupdate_data.find("\'id\': ")
-    #    from_id = strupdate_data[start+6:start+16]
-    #    send_message(from_id, f"You have sent an unknown event. Please send the following information to the bot administrator.\n您发送了一个未知事件，请把下面信息发送至bot管理员。\n\n{update_data}\n{e}")
-    #    send_message(admin_id, f"收到了一个未知事件，原文为：\n{update_data}\n错误为：\n{e}")
-
     update = Update(update_data)
     if update.is_group :
         log = f"{event_received}\n@{update.user_name} id:`{update.from_id}` {group} @{update.group_name} id:`{update.chat_id}`\n{the_content_sent_is}\n{update.text}\n```json\n{update_data}```"
@@ -41,7 +32,7 @@ def handle_message(update_data):
     authorized = is_authorized(update.is_group, update.from_id, update.user_name,  update.chat_id, update.group_name)
 
     if update.type == "command":
-        response_text = excute_command(update.from_id, update.text, update.from_type, update.chat_id)
+        response_text = execute_command(update.from_id, update.text, update.from_type, update.chat_id)
         if response_text!= "":
             send_message(update.chat_id, response_text)
             if update.is_group :
@@ -98,10 +89,10 @@ def handle_message(update_data):
             log = f"@{update.user_name} id:`{update.from_id}`[photo]({photo_url}),{the_accompanying_message_is}\n{update.photo_caption}\n{the_reply_content_is}\n{response_text}"
         send_image_log("", imageID)
         send_log(log)
-
     else:
-        send_message(
-            update.chat_id, f"{unable_to_recognize_content_sent}\n\n/help")
+        # Don't react to other messages (e.g. adding/removing group members).
+        # send_message(
+        #     update.chat_id, f"{unable_to_recognize_content_sent}\n\n/help")
         if update.is_group:
             log = f"@{update.user_name} id:`{update.from_id}` {group} @{update.group_name} id:`{update.chat_id}`{send_unrecognized_content}"
         else:
