@@ -9,8 +9,8 @@ from .printLog import send_log
 TELEGRAM_API = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
 
-def send_message(chat_id, text, **kwargs):
-    """send text message"""
+def send_one_message(chat_id, text, **kwargs):
+    """send one text message"""
     payload = {
         "chat_id": chat_id,
         "text": escape(text),
@@ -21,6 +21,11 @@ def send_message(chat_id, text, **kwargs):
     print(f"Sent message: {text} to {chat_id}")
     send_log(f"{send_message_log}\n```json\n{str(r)}```")
     return r
+
+def send_message(chat_id, text, **kwargs):
+    """send text message"""
+    for i in range(0, len(text), 4000):
+        send_one_message(chat_id, text[i:i+4000], **kwargs)
 
 
 def send_imageMessage(chat_id, text, imageID):
