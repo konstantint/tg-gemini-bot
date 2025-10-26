@@ -30,7 +30,7 @@ def generate_content(prompt: str) -> str:
     """generate text from prompt"""
     try:
         response = model_usual.generate_content(prompt)
-        result = response.text
+        result = "".join(part.text for part in response.parts)
     except Exception as e:
         result = f"{gemini_err_info}\n{repr(e)}"
     return result
@@ -41,7 +41,7 @@ def generate_text_with_image(prompt: str, image_bytes: BytesIO) -> str:
     img = PIL.Image.open(image_bytes)
     try:
         response = model_vision.generate_content([prompt, img])
-        result = response.text
+        result = "".join(part.text for part in response.parts)
     except Exception as e:
         result = f"{gemini_err_info}\n{repr(e)}"
     return result
@@ -64,7 +64,7 @@ class ChatConversation:
         else:
             try:
                 response = self.chat.send_message(prompt)
-                result = response.text
+                result = "".join(part.text for part in response.parts)
             except Exception as e:
                 result = f"{gemini_err_info}\n{repr(e)}"
         return result
